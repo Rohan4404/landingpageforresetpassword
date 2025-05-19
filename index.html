@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Password Reset Redirect</title>
+    <script>
+      window.onload = function () {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        if (token) {
+          // Redirect to your Expo app deep link with token
+          window.location.href = `myapp://reset-password?token=${token}`;
+
+          // Optional: If redirect fails (because some browsers block it), show message
+          setTimeout(() => {
+            document.getElementById("message").textContent =
+              "If you are not redirected automatically, please click the link below.";
+            document.getElementById("link").style.display = "inline";
+          }, 1500);
+        } else {
+          document.getElementById("message").textContent =
+            "Invalid or missing token.";
+        }
+      };
+    </script>
+  </head>
+  <body
+    style="font-family: Arial, sans-serif; text-align: center; padding: 40px"
+  >
+    <h1>Password Reset</h1>
+    <p id="message">Redirecting...</p>
+    <a
+      id="link"
+      href="#"
+      style="display: none; color: blue; text-decoration: underline"
+      >Open App to Reset Password</a
+    >
+  </body>
+</html>
