@@ -10,14 +10,18 @@
         const token = params.get("token");
 
         if (token) {
-          // Redirect to your Expo app deep link with token
-          window.location.href = `myapp://reset-password?token=${token}`;
+          const deepLink = `myapp://reset-password?token=${token}`;
 
-          // Optional: If redirect fails (because some browsers block it), show message
+          // Attempt auto-redirect
+          window.location.href = deepLink;
+
+          // Fallback if auto-redirect doesn't work
           setTimeout(() => {
             document.getElementById("message").textContent =
-              "If you are not redirected automatically, please click the link below.";
-            document.getElementById("link").style.display = "inline";
+              "If you are not redirected automatically, click below to open the app.";
+            const link = document.getElementById("link");
+            link.href = deepLink;
+            link.style.display = "inline";
           }, 1500);
         } else {
           document.getElementById("message").textContent =
@@ -33,8 +37,13 @@
     <p id="message">Redirecting...</p>
     <a
       id="link"
-      href="#"
-      style="display: none; color: blue; text-decoration: underline"
+      href=""
+      style="
+        display: none;
+        color: blue;
+        text-decoration: underline;
+        font-size: 18px;
+      "
       >Open App to Reset Password</a
     >
   </body>
