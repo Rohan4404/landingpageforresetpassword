@@ -2,49 +2,123 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Password Reset Redirect</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 40px;
+        background-color: #f4f4f4;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      h1 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      p {
+        color: #555;
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+      a {
+        color: #007bff;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px 20px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      a:hover {
+        background-color: #007bff;
+        color: white;
+      }
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
     <script>
       window.onload = function () {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
+        const messageElement = document.getElementById("message");
+        const linkElement = document.getElementById("link");
+        const loaderElement = document.getElementById("loader");
 
         if (token) {
-          const deepLink = `myapp://reset-password?token=${token}`;
+          // Show loader during redirect attempt
+          loaderElement.style.display = "block";
+          messageElement.textContent = "Redirecting to the app...";
 
-          // Attempt auto-redirect
+          // Replace 'rohanapp' with your app's scheme from app.json
+          const deepLink = `rohanapp://reset-password?token=${encodeURIComponent(token)}`;
+          // Universal link as a fallback (if configured)
+          const universalLink = `https://rohan4404.github.io/landingpageforresetpassword/?token=${encodeURIComponent(token)}`;
+
+          console.log("Token:", token);
+          console.log("Deep Link:", deepLink);
+
+          // Attempt deep link redirect
           window.location.href = deepLink;
 
-          // Fallback if auto-redirect doesn't work
+          // Fallback after 2 seconds
           setTimeout(() => {
-            document.getElementById("message").textContent =
-              "If you are not redirected automatically, click below to open the app.";
-            const link = document.getElementById("link");
-            link.href = deepLink;
-            link.style.display = "inline";
-          }, 1500);
+            loaderElement.style.display = "none";
+            messageElement.textContent =
+              "If you are not redirected, click below to open the app or install it.";
+            linkElement.href = deepLink;
+            linkElement.style.display = "inline-block";
+
+            // Show store links if app is not installed
+            const storeLinks = document.getElementById("store-links");
+            storeLinks.style.display = "block";
+          }, 2000);
         } else {
-          document.getElementById("message").textContent =
-            "Invalid or missing token.";
+          loaderElement.style.display = "none";
+          messageElement.textContent = "Invalid or missing token.";
+          console.error("No token found in URL");
         }
       };
     </script>
   </head>
-  <body
-    style="font-family: Arial, sans-serif; text-align: center; padding: 40px"
-  >
+  <body>
     <h1>Password Reset</h1>
-    <p id="message">Redirecting...</p>
-    <a
-      id="link"
-      href=""
-      style="
-        display: none;
-        color: blue;
-        text-decoration: underline;
-        font-size: 18px;
-      "
-      >Open App to Reset Password</a
-    >
+    <div id="loader" class="loader"></div>
+    <p id="message">Checking...</p>
+    <a id="link" href="" style="display: none">Open App to Reset Password</a>
+    <div id="store-links" style="display: none; margin-top: 20px;">
+      <p>Don't have the app?</p>
+      <a
+        href="https://play.google.com/store/apps/details?id=com.yourcompany.yourapp"
+        style="margin-right: 10px;"
+        >Get it on Google Play</a
+      >
+      <a href="https://apps.apple.com/us/app/your-app/idYOUR_APP_ID"
+        >Download on the App Store</a
+      >
+    </div>
   </body>
 </html>
