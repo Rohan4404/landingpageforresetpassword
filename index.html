@@ -60,7 +60,7 @@
         }
       }
     </style>
-    <script>
+<!--     <script>
       window.onload = function () {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
@@ -105,7 +105,45 @@ const deepLink = `exp://192.168.1.5:8081/NewPasswordAfterReset?token=${encodeURI
           console.error("No token found in URL");
         }
       };
-    </script>
+    </script> -->
+
+    <script>
+  window.onload = function () {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const messageElement = document.getElementById("message");
+    const linkElement = document.getElementById("link");
+    const loaderElement = document.getElementById("loader");
+
+    if (token) {
+      loaderElement.style.display = "block";
+      messageElement.textContent = "Redirecting to the app...";
+
+      const deepLink = `exp://192.168.1.5:8081/NewPasswordAfterReset?token=${encodeURIComponent(token)}`;
+      const universalLink = `https://rohan4404.github.io/landingpageforresetpassword/?token=${encodeURIComponent(token)}`;
+
+      console.log("Token:", token);
+      console.log("Deep Link:", deepLink);
+
+      window.location.href = deepLink;
+
+      setTimeout(() => {
+        loaderElement.style.display = "none";
+        messageElement.textContent =
+          "If you are not redirected, click below to open the app or install it.";
+        linkElement.href = deepLink;
+        linkElement.style.display = "inline-block";
+
+        const storeLinks = document.getElementById("store-links");
+        storeLinks.style.display = "block";
+      }, 2000);
+    } else {
+      loaderElement.style.display = "none";
+      messageElement.textContent = "Invalid or missing token.";
+      console.error("No token found in URL");
+    }
+  };
+</script>
   </head>
   <body>
     <h1>Password Reset</h1>
