@@ -74,7 +74,7 @@
           messageElement.textContent = "Redirecting to the app...";
 
           // Replace 'rohanapp' with your app's scheme from app.json
-          const deepLink = `rohanapp://reset-password?token=${encodeURIComponent(token)}`;
+          const deepLink = `rohanapp://NewPasswordAfterReset?token=${encodeURIComponent(token)}`;
           // Universal link as a fallback (if configured)
           const universalLink = `https://rohan4404.github.io/landingpageforresetpassword/?token=${encodeURIComponent(token)}`;
 
